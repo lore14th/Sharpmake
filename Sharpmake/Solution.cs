@@ -26,6 +26,12 @@ namespace Sharpmake
             set { SetProperty(ref _isFileNameToLower, value); }
         }
 
+        // Tinfoil: Add support for hidden targets
+        // Set this to true to enable the hide targets options.
+        // NOTE: Set the visibility to Visibility.Hide on the targets you want to hide
+        public bool EnableHideTargets = false;
+        // ~Tinfoil
+
         public string ClassName { get; private set; }                       // Solution Class Name, ex: "MySolution"
         public string SharpmakeCsFileName { get; private set; }             // File name of the c# project configuration, ex: "MyProject.cs"
         public string SharpmakeCsPath { get; private set; }                 // Path of the CsFileName, ex: "c:\dev\MyProject"
