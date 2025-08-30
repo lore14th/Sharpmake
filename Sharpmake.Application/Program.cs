@@ -171,6 +171,10 @@ namespace Sharpmake.Application
             {
                 DebugEnable = CommandLine.ContainParameter("verbose") || CommandLine.ContainParameter("debug") || CommandLine.ContainParameter("diagnostics");
 
+                // Tinfoil: Ignore path to lower
+                Util.ForcePathToLower = !CommandLine.ContainParameter("ignorePathToLower");
+                // ~Tinfoil
+
                 GetAssemblyInfo(Assembly.GetExecutingAssembly(), out var _, out var version, out var versionString, out var _);
   
                 LogWriteLine($"sharpmake {versionString}");

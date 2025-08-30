@@ -23,6 +23,11 @@ namespace Sharpmake
 
         public static readonly char[] _pathSeparators = { Util.WindowsSeparator, Util.UnixSeparator };
 
+        // Tinfoil: Ignore path to lower
+        // Add /ignorePathToLower into the command line arguments to enable this feature
+        public static bool ForcePathToLower = !Util.IsRunningOnUnix();
+        // ~Tinfoil
+
         public static void PathMakeStandard(IList<string> paths)
         {
             for (int i = 0; i < paths.Count; ++i)
@@ -31,7 +36,9 @@ namespace Sharpmake
 
         public static string PathMakeStandard(string path)
         {
-            return PathMakeStandard(path, !Util.IsRunningOnUnix());
+            // Tinfoil: Ignore path to lower
+            return PathMakeStandard(path, ForcePathToLower);
+            // ~Tinfoil
         }
 
         /// <summary>
