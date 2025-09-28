@@ -1199,6 +1199,14 @@ namespace Sharpmake.Generators.VisualStudio
             {
                 if (intellisenseCommandLineOptions != FileGeneratorUtilities.RemoveLineTag)
                     intellisenseCommandLineOptions += " ";
+                // Tinfoil: Fix  Additional options for NMake builds
+                else
+                {
+                    // NOTE: Reset intellisenseCommandLineOptions in order to add the options defined in the script
+                    intellisenseCommandLineOptions = "";
+                }
+                // ~Tinfoil
+
                 intellisenseCommandLineOptions += string.Join(' ', intellisenseAdditionalCommandlineOptions);
             }
             context.Options["IntellisenseCommandLineOptions"] = intellisenseCommandLineOptions;
