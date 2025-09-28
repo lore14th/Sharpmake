@@ -147,6 +147,16 @@ namespace Sharpmake.Generators.VisualStudio
             context.Options["IntermediateDirectory"] = context.Configuration.Output != Project.Configuration.OutputType.None ? optionsContext.IntermediateDirectoryRelative : FileGeneratorUtilities.RemoveLineTag;
             context.CommandLineOptions["IntermediateDirectory"] = FormatCommandLineOptionPath(context, optionsContext.IntermediateDirectoryRelative);
 
+            // Tinfoil: Allow NMake projects to override the Output directory
+            if(context.Configuration.Output == Project.Configuration.OutputType.None 
+                && context.Configuration.CustomBuildSettings != null 
+                && context.Configuration.CustomBuildSettings.UseProjectConfigurationOutputDirectories)
+            {
+                context.Options["OutputDirectory"] = optionsContext.OutputDirectoryRelative;
+                context.Options["IntermediateDirectory"] = optionsContext.IntermediateDirectoryRelative;
+            }
+            // ~Tinfoil
+
             if (!string.IsNullOrEmpty(context.Configuration.LayoutDir))
                 context.Options["LayoutDir"] = Util.PathGetRelative(context.ProjectDirectory, context.Configuration.LayoutDir);
             else

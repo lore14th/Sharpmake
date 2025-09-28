@@ -2029,6 +2029,13 @@ namespace Sharpmake
                 /// </summary>
                 public bool AutoConfigure = true;
 
+                // Tinfoil 
+                /// <summary>
+                ///  Enable this flag to use the TargetPath and IntermediatePath from the project configuration
+                /// </summary>
+                public bool UseProjectConfigurationOutputDirectories = false;
+                // ~Tinfoil
+
                 public bool IsResolved { get; private set; } = false;
 
                 internal void Resolve(Resolver resolver)
