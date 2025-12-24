@@ -171,10 +171,6 @@ namespace Sharpmake.Application
             {
                 DebugEnable = CommandLine.ContainParameter("verbose") || CommandLine.ContainParameter("debug") || CommandLine.ContainParameter("diagnostics");
 
-                // Tinfoil: Ignore path to lower
-                Util.ForcePathToLower = !CommandLine.ContainParameter("ignorePathToLower");
-                // ~Tinfoil
-
                 GetAssemblyInfo(Assembly.GetExecutingAssembly(), out var _, out var version, out var versionString, out var _);
   
                 LogWriteLine($"sharpmake {versionString}");
@@ -202,6 +198,10 @@ namespace Sharpmake.Application
 
                 if (parameters.Exit)
                     return (int)ExitCode.Success;
+
+                // Tinfoil: Ignore path to lower
+                Util.ForcePathToLower = !parameters.IgnorePathToLower;
+                // ~Tinfoil
 
                 const string sharpmakeSymbolPrefix = "_SHARPMAKE";
                 List<string> invalidSymbols = parameters.Defines.Where(define => define.StartsWith(sharpmakeSymbolPrefix)).ToList();
