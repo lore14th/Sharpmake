@@ -1,22 +1,21 @@
+// Copyright TinfoilBuildTool. All Rights Reserved.
+
 // Sharpmake build script
 
 using Sharpmake;
 using System.IO;
 
-public class SharpmakeBaseProject : Sharpmake.CSharpProject
+public class SharpmakeBaseProject : TinfoilBuildTool.CSharpProject
 {
 	public SharpmakeBaseProject(string projectGuid)
 	{
-		IsFileNameToLower = false;
-		IsTargetFileNameToLower = false;
-		AddTargets(TinfoilBuildToolMain.GetTargets());
-
 		m_ProjectGuid = projectGuid;
 	}
 
-	[Sharpmake.Configure]
-	public virtual void ConfigureProject(Project.Configuration config, ITarget target)
+	public override void Configure(Sharpmake.Project.Configuration config, Sharpmake.ITarget target)
 	{
+		base.Configure(config, target);
+
 		// Most Sharpamke projects are supposed to export a class library.
 		// Projects can override this value after the call to base.ConfigureProject if necessary
 		config.Output = Configuration.OutputType.DotNetClassLibrary;
@@ -44,9 +43,9 @@ public class SharpmakeApplicationProject : SharpmakeBaseProject
 		SourceRootPath = @"[project.SharpmakeCsPath]/Sharpmake.Application";
 	}
 
-	public override void ConfigureProject(Project.Configuration config, ITarget target)
+	public override void Configure(Sharpmake.Project.Configuration config, Sharpmake.ITarget target)
 	{
-		base.ConfigureProject(config, target);
+		base.Configure(config, target);
 		config.Output = Configuration.OutputType.DotNetConsoleApp; // override output type
 
 		config.AddPrivateDependency<SharpmakeCommonPlatformsProject>(target, DependencySetting.Default);
@@ -64,9 +63,9 @@ public class SharpmakeCoreProject : SharpmakeBaseProject
 		SourceRootPath = @"[project.SharpmakeCsPath]/Sharpmake";
 	}
 
-	public override void ConfigureProject(Project.Configuration config, ITarget target)
+	public override void Configure(Sharpmake.Project.Configuration config, Sharpmake.ITarget target)
 	{
-		base.ConfigureProject(config, target);
+		base.Configure(config, target);
 	}
 }
 
@@ -79,9 +78,9 @@ public class SharpmakeFunctionalTestsProject : SharpmakeBaseProject
 		SourceRootPath = @"[project.SharpmakeCsPath]/Sharpmake.FunctionalTests";
 	}
 
-	public override void ConfigureProject(Project.Configuration config, ITarget target)
+	public override void Configure(Sharpmake.Project.Configuration config, Sharpmake.ITarget target)
 	{
-		base.ConfigureProject(config, target);
+		base.Configure(config, target);
 
 		config.AddPrivateDependency<SharpmakeApplicationProject>(target, DependencySetting.Default);
 	}
@@ -96,9 +95,9 @@ public class SharpmakeGeneratorsProject : SharpmakeBaseProject
 		SourceRootPath = @"[project.SharpmakeCsPath]/Sharpmake.Generators";
 	}
 
-	public override void ConfigureProject(Project.Configuration config, ITarget target)
+	public override void Configure(Sharpmake.Project.Configuration config, Sharpmake.ITarget target)
 	{
-		base.ConfigureProject(config, target);
+		base.Configure(config, target);
 
 		config.AddPrivateDependency<SharpmakeCoreProject>(target, DependencySetting.Default);
 	}
@@ -113,9 +112,9 @@ public class SharpmakeCommonPlatformsProject : SharpmakeBaseProject
 		SourceRootPath = @"[project.SharpmakeCsPath]/Sharpmake.Platforms/Sharpmake.CommonPlatforms";
 	}
 
-	public override void ConfigureProject(Project.Configuration config, ITarget target)
+	public override void Configure(Sharpmake.Project.Configuration config, Sharpmake.ITarget target)
 	{
-		base.ConfigureProject(config, target);
+		base.Configure(config, target);
 
 		config.AddPrivateDependency<SharpmakeCoreProject>(target, DependencySetting.Default);
 		config.AddPrivateDependency<SharpmakeGeneratorsProject>(target, DependencySetting.Default);
@@ -131,9 +130,9 @@ public class SharpmakeSamplesProject : SharpmakeBaseProject
 		SourceRootPath = @"[project.SharpmakeCsPath]/Samples";
 	}
 
-	public override void ConfigureProject(Project.Configuration config, ITarget target)
+	public override void Configure(Sharpmake.Project.Configuration config, Sharpmake.ITarget target)
 	{
-		base.ConfigureProject(config, target);
+		base.Configure(config, target);
 
 		config.AddPrivateDependency<SharpmakeApplicationProject>(target, DependencySetting.Default);
 	}
@@ -148,9 +147,9 @@ public class SharpmakeUnitTestsProject : SharpmakeBaseProject
 		SourceRootPath = @"[project.SharpmakeCsPath]/Sharpmake.UnitTests";
 	}
 
-	public override void ConfigureProject(Project.Configuration config, ITarget target)
+	public override void Configure(Sharpmake.Project.Configuration config, Sharpmake.ITarget target)
 	{
-		base.ConfigureProject(config, target);
+		base.Configure(config, target);
 
 		config.AddPrivateDependency<SharpmakeCommonPlatformsProject>(target, DependencySetting.Default);
 		config.AddPrivateDependency<SharpmakeCoreProject>(target, DependencySetting.Default);
