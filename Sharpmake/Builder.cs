@@ -69,6 +69,14 @@ namespace Sharpmake
         }
     }
 
+    // Tinfoil: Add extra command line arguments
+    public class TinfoilArguments
+    {
+        public string ProjectConfigurationClass = string.Empty;
+        public string DevEnvName = "vs2022";
+    }
+    // ~Tinfoil
+
     public class Builder : IDisposable
     {
         public static Builder Instance;
@@ -111,6 +119,10 @@ namespace Sharpmake
         #endregion
 
         public Arguments Arguments = null;
+
+        // Tinfoil: Add extra command line arguments
+        public TinfoilArguments TinfoilArgs = null;
+        // ~Tinfoil
 
         public bool SkipInvalidPath { get; set; }
 

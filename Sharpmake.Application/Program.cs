@@ -644,6 +644,10 @@ namespace Sharpmake.Application
             builder.EventOutputMessage += LogWrite;
             builder.EventOutputDebug += DebugWrite;
 
+            // Tinfoil: Add extra command line arguments
+            builder.TinfoilArgs = parameters.TinfoilArguments;
+            // ~Tinfoil
+
             if (!string.IsNullOrEmpty(parameters.ProfileFile))
                 builder.EnableProfiling();
 
