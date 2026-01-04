@@ -15,13 +15,11 @@ public class SharpmakeBaseProject : TinfoilBuildTool.CSharpProject
 	public override void Configure(Sharpmake.Project.Configuration config, Sharpmake.ITarget target)
 	{
 		base.Configure(config, target);
+		config.Output = Configuration.OutputType.DotNetClassLibrary; // override output type
 
-		// Most Sharpmake projects are supposed to export a class library.
-		// Projects can override this value after the call to base.ConfigureProject if necessary
-		config.Output = Configuration.OutputType.DotNetClassLibrary;
-
-		// Setup the output directories
-		config.ProjectPath = @"[project.SharpmakeCsPath]";
+        // Since this project is used by multiple ProjectConfigurations, we can't really rely on the ProjectConfiguration 
+        // to setup the output directories. We need to override them manually
+        config.ProjectPath = @"[project.SharpmakeCsPath]";
 		config.TargetPath = @"[project.SharpmakeCsPath]/Binaries";
 		config.IntermediatePath = @"[project.SharpmakeCsPath]/Intermediate";
         config.BaseIntermediateOutputPath = config.IntermediatePath;
