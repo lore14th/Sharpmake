@@ -70,8 +70,9 @@ namespace Sharpmake
     }
 
     // Tinfoil: Add extra command line arguments
-    public class TinfoilArguments
+    public class TinfoilBuildToolArguments
     {
+        public bool BuildProjects = false;
         public string ProjectConfigurationClass = string.Empty;
         public string DevEnvName = "vs2022";
     }
@@ -121,7 +122,7 @@ namespace Sharpmake
         public Arguments Arguments = null;
 
         // Tinfoil: Add extra command line arguments
-        public TinfoilArguments TinfoilArgs = null;
+        public TinfoilBuildToolArguments TinfoilBuildToolArgs = null;
         // ~Tinfoil
 
         public bool SkipInvalidPath { get; set; }

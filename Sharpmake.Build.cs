@@ -16,7 +16,7 @@ public class SharpmakeBaseProject : TinfoilBuildTool.CSharpProject
 	{
 		base.Configure(config, target);
 
-		// Most Sharpamke projects are supposed to export a class library.
+		// Most Sharpmake projects are supposed to export a class library.
 		// Projects can override this value after the call to base.ConfigureProject if necessary
 		config.Output = Configuration.OutputType.DotNetClassLibrary;
 
@@ -24,8 +24,9 @@ public class SharpmakeBaseProject : TinfoilBuildTool.CSharpProject
 		config.ProjectPath = @"[project.SharpmakeCsPath]";
 		config.TargetPath = @"[project.SharpmakeCsPath]/Binaries";
 		config.IntermediatePath = @"[project.SharpmakeCsPath]/Intermediate";
+        config.BaseIntermediateOutputPath = config.IntermediatePath;
 
-		config.ProjectGuid = m_ProjectGuid;
+        config.ProjectGuid = m_ProjectGuid;
 		config.ProjectPath = SourceRootPath;
 		config.TargetPath = Path.Combine(SourceRootPath, "bin");
 		config.IntermediatePath = Path.Combine(SourceRootPath, "obj");
