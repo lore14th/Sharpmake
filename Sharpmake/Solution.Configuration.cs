@@ -141,6 +141,26 @@ namespace Sharpmake
                 StartupProject = includedProjectInfo;
             }
 
+            // TinfoilBuildTool: Add support for SetStartupProject from ProjectType
+            public void SetStartupProjectFromType(Type projectType,
+                [CallerFilePath] string sourceFilePath = "",
+                [CallerLineNumber] int sourceLineNumber = 0)
+            {
+                IncludedProjectInfo includedProjectInfo = GetProject(projectType);
+
+                if (includedProjectInfo == null)
+                {
+                    throw new Error(string.Format("{0} error : Can't set project {1} as startup project of solution {2} and target {3} since it is not included in the configuration.",
+                        Util.FormatCallerInfo(sourceFilePath, sourceLineNumber),
+                        projectType.Name,
+                        Solution.Name,
+                        Target));
+                }
+
+                StartupProject = includedProjectInfo;
+            }
+            // ~Tinfoil
+
             [DebuggerDisplay("{Project == null ? Type.Name : Project.Name} {Configuration == null ? Target.Name : Configuration.Name}")]
             public class IncludedProjectInfo
             {
