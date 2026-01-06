@@ -205,10 +205,17 @@ namespace Sharpmake
     public enum Visibility
     {
         Show = 0x01,
-        Hide = 0x02,
         Hide = 0x02
     }
-    // ~Tinfoil
+    // ~TinfoilBuildTool
+
+    // TinfoilBuildTool: Add support for target type
+    public enum ProjectType
+    {
+        Native = 0x01,
+        DotNet = 0x02
+    }
+    // ~TinfoilBuildTool
 
     [Fragment, Flags]
     public enum OutputType
@@ -325,11 +332,12 @@ namespace Sharpmake
         public string FrameworkFolder { get { return Framework.ToFolderName(); } }
         public Blob Blob;
 
-        // Tinfoil: Add support for hidden targets
-        public Visibility visibility = Visibility.Show;
-        // ~Tinfoil
         // TinfoilBuildTool: Add support for hidden targets
         public Visibility Visibility = Visibility.Show;
+        // ~TinfoilBuildTool
+
+        // TinfoilBuildTool: Add support for project type
+        public ProjectType ProjectType = ProjectType.Native;
         // ~TinfoilBuildTool
 
         public override string Name
@@ -346,7 +354,11 @@ namespace Sharpmake
             OutputType outputType = OutputType.Lib,
             Blob blob = Blob.NoBlob,
             BuildSystem buildSystem = BuildSystem.MSBuild,
-            DotNetFramework framework = DotNetFramework.v3_5
+            DotNetFramework framework = DotNetFramework.v3_5,
+        /* TinfoilBuildTool */
+            ProjectType projectType = ProjectType.Native,
+            Visibility visibility = Visibility.Show
+        /* ~TinfoilBuildTool */
         )
         {
             Platform = platform;
@@ -356,6 +368,11 @@ namespace Sharpmake
             Framework = framework;
             BuildSystem = buildSystem;
             Blob = blob;
+
+            // TinfoilBuildTool: Add support for project type
+            ProjectType = projectType;
+            Visibility = visibility;
+            // ~TinfoilBuildTool
         }
     }
 
@@ -490,7 +507,24 @@ namespace Sharpmake
         {
             return GetFragment<Visibility>();
         }
-        // ~Tinfoil
+        // ~TinfoilBuildTool
+
+        // TinfoilBuildTool: Add support for project type
+        public virtual ProjectType GetTargetType()
+        {
+            return GetFragment<ProjectType>();
+        }
+
+        public bool IsNativeTarget()
+        {
+            return GetTargetType() == ProjectType.Native;
+        }
+
+        public bool IsDotNetTarget()
+        {
+            return GetTargetType() == ProjectType.DotNet;
+        }
+        // ~TinfoilBuildTool
 
         public T GetFragment<T>()
         {
