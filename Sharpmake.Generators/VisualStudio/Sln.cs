@@ -447,12 +447,12 @@ namespace Sharpmake.Generators.VisualStudio
             fileGenerator.Write(Template.Solution.GlobalSectionSolutionConfigurationBegin);
             foreach (Solution.Configuration solutionConfiguration in solutionConfigurations)
             {
-                // Tinfoil: Add support for hidden targets
+                // TinfoilBuildTool: Add support for hidden targets
                 if (solution.EnableHideTargets && solutionConfiguration.Target.GetVisibility() == Visibility.Hide)
                 {
                     continue;
                 }
-                // ~Tinfoil
+                // ~TinfoilBuildTool
 
                 string configurationName;
                 string category;

@@ -2029,12 +2029,12 @@ namespace Sharpmake
                 /// </summary>
                 public bool AutoConfigure = true;
 
-                // Tinfoil 
+                // TinfoilBuildTool: Add output directories support for custom builds
                 /// <summary>
                 ///  Enable this flag to use the TargetPath and IntermediatePath from the project configuration
                 /// </summary>
                 public bool UseProjectConfigurationOutputDirectories = false;
-                // ~Tinfoil
+                // ~TinfoilBuildTool
 
                 public bool IsResolved { get; private set; } = false;
 

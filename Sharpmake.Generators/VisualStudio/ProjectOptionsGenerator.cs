@@ -147,15 +147,15 @@ namespace Sharpmake.Generators.VisualStudio
             context.Options["IntermediateDirectory"] = context.Configuration.Output != Project.Configuration.OutputType.None ? optionsContext.IntermediateDirectoryRelative : FileGeneratorUtilities.RemoveLineTag;
             context.CommandLineOptions["IntermediateDirectory"] = FormatCommandLineOptionPath(context, optionsContext.IntermediateDirectoryRelative);
 
-            // Tinfoil: Allow NMake projects to override the Output directory
-            if(context.Configuration.Output == Project.Configuration.OutputType.None 
-                && context.Configuration.CustomBuildSettings != null 
+            // TinfoilBuildTool: Allow NMake projects to override the Output directory
+            if (context.Configuration.Output == Project.Configuration.OutputType.None
+                && context.Configuration.CustomBuildSettings != null
                 && context.Configuration.CustomBuildSettings.UseProjectConfigurationOutputDirectories)
             {
                 context.Options["OutputDirectory"] = optionsContext.OutputDirectoryRelative;
                 context.Options["IntermediateDirectory"] = optionsContext.IntermediateDirectoryRelative;
             }
-            // ~Tinfoil
+            // ~TinfoilBuildTool
 
             if (!string.IsNullOrEmpty(context.Configuration.LayoutDir))
                 context.Options["LayoutDir"] = Util.PathGetRelative(context.ProjectDirectory, context.Configuration.LayoutDir);
@@ -1209,13 +1209,13 @@ namespace Sharpmake.Generators.VisualStudio
             {
                 if (intellisenseCommandLineOptions != FileGeneratorUtilities.RemoveLineTag)
                     intellisenseCommandLineOptions += " ";
-                // Tinfoil: Fix  Additional options for NMake builds
+                // TinfoilBuildTool: Fix  Additional options for NMake builds
                 else
                 {
                     // NOTE: Reset intellisenseCommandLineOptions in order to add the options defined in the script
                     intellisenseCommandLineOptions = "";
                 }
-                // ~Tinfoil
+                // ~TinfoilBuildTool
 
                 intellisenseCommandLineOptions += string.Join(' ', intellisenseAdditionalCommandlineOptions);
             }

@@ -199,13 +199,14 @@ namespace Sharpmake
         Retail = 0x04
     }
 
-    // Tinfoil: Add support for hidden targets
+    // TinfoilBuildTool: Add support for hidden targets
     // NOTE: Remember to set EnableHideTargets to true in the Solution constructor
     [Fragment, Flags]
     public enum Visibility
     {
         Show = 0x01,
         Hide = 0x02,
+        Hide = 0x02
     }
     // ~Tinfoil
 
@@ -327,6 +328,9 @@ namespace Sharpmake
         // Tinfoil: Add support for hidden targets
         public Visibility visibility = Visibility.Show;
         // ~Tinfoil
+        // TinfoilBuildTool: Add support for hidden targets
+        public Visibility Visibility = Visibility.Show;
+        // ~TinfoilBuildTool
 
         public override string Name
         {
@@ -481,7 +485,7 @@ namespace Sharpmake
             return GetFragment<Optimization>();
         }
 
-        // Tinfoil: Add support for hidden targets
+        // TinfoilBuildTool: Add support for hidden targets
         public virtual Visibility GetVisibility()
         {
             return GetFragment<Visibility>();

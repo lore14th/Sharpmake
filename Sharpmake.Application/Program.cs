@@ -199,9 +199,9 @@ namespace Sharpmake.Application
                 if (parameters.Exit)
                     return (int)ExitCode.Success;
 
-                // Tinfoil: Ignore path to lower
+                // TinfoilBuildTool: Ignore path to lower
                 Util.ForcePathToLower = !parameters.IgnorePathToLower;
-                // ~Tinfoil
+                // ~TinfoilBuildTool
 
                 const string sharpmakeSymbolPrefix = "_SHARPMAKE";
                 List<string> invalidSymbols = parameters.Defines.Where(define => define.StartsWith(sharpmakeSymbolPrefix)).ToList();
@@ -644,9 +644,9 @@ namespace Sharpmake.Application
             builder.EventOutputMessage += LogWrite;
             builder.EventOutputDebug += DebugWrite;
 
-            // Tinfoil: Add extra command line arguments
+            // TinfoilBuildTool: Add extra command line arguments
             builder.TinfoilBuildToolArgs = parameters.TinfoilBuildToolArguments;
-            // ~Tinfoil
+            // ~TinfoilBuildTool
 
             if (!string.IsNullOrEmpty(parameters.ProfileFile))
                 builder.EnableProfiling();
