@@ -142,7 +142,8 @@ namespace Sharpmake
             }
 
             // TinfoilBuildTool: Add support for SetStartupProject from ProjectType
-            public void SetStartupProjectFromType(Type projectType,
+            public void SetStartupProject(
+                Type projectType,
                 [CallerFilePath] string sourceFilePath = "",
                 [CallerLineNumber] int sourceLineNumber = 0)
             {
