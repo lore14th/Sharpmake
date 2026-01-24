@@ -526,6 +526,13 @@ namespace Sharpmake
         }
         // ~TinfoilBuildTool
 
+        // TinfoilBuildTool: Add build target names
+        public virtual string GetBuildTargetName()
+        {
+            return string.Format("{0}-{1}", GetOptimization(), GetPlatform());
+        }
+        // ~TinfoilBuildTool
+
         public T GetFragment<T>()
         {
             T value;
