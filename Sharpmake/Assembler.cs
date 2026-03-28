@@ -288,9 +288,11 @@ namespace Sharpmake
 
         #region Internal
 
-        internal delegate void OutputDelegate(string message, params object[] args);
-        internal static event OutputDelegate EventOutputError;
-        internal static event OutputDelegate EventOutputWarning;
+        // TinfoilBuildTool: Run Sharpmake directly from TinfoilBuildTool
+        public delegate void OutputDelegate(string message, params object[] args);
+        public static event OutputDelegate EventOutputError;
+        public static event OutputDelegate EventOutputWarning;
+        // ~TinfoilBuildTool
 
         internal void AddSharpmakeAssemblies()
         {

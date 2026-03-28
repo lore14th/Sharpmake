@@ -510,7 +510,9 @@ namespace Sharpmake.Application
             }
         }
 
-        private static void GenerateAll(BuildContext.BaseBuildContext buildContext, Argument parameters)
+        // TinfoilBuildTool: Run Sharpmake directly from TinfoilBuildTool
+        public static void GenerateAll(BuildContext.BaseBuildContext buildContext, Argument parameters)
+        // ~TinfoilBuildTool
         {
             if (parameters.GenerateDebugSolution)
             {
