@@ -466,6 +466,14 @@ namespace Sharpmake
         }
         public virtual void GenerateProjectConfigurationCustomMakeFile(IVcxprojGenerationContext context, IFileGenerator generator)
         {
+            // TinfoilBuildTool: Use TinfoilBuildTool makefile format
+            if (context.UseTinfoilBuildToolMakefileFormat)
+            {
+                generator.Write(_tbt_projectConfigurationsCustomMakefile);
+                return;
+            }
+            // ~TinfoilBuildTool
+
             generator.Write(_projectConfigurationsCustomMakefile);
         }
 

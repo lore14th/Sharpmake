@@ -305,6 +305,28 @@ del ""[options.OutputDirectory]\[conf.TargetFileFullName].pdb"" &gt;NUL 2&gt;NUL
   </ItemDefinitionGroup>
 ";
 
+        // TinfoilBuildTool: Use TinfoilBuildTool makefile format
+        // - Removes NMakeForcedIncludes
+        private const string _tbt_projectConfigurationsCustomMakefile =
+    @"  <PropertyGroup Condition=""'$(Configuration)|$(Platform)'=='[conf.Name]|[platformName]'"">
+    <OutDir>[options.OutputDirectory]\</OutDir>
+    <IntDir>[options.IntermediateDirectory]\</IntDir>
+    <NMakeBuildCommandLine>[conf.CustomBuildSettings.BuildCommand]</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>[conf.CustomBuildSettings.RebuildCommand]</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>[conf.CustomBuildSettings.CleanCommand]</NMakeCleanCommandLine>
+    <NMakeOutput>[conf.CustomBuildSettings.OutputFile]</NMakeOutput>
+    <NMakePreprocessorDefinitions>[EscapeXML:options.PreprocessorDefinitions]</NMakePreprocessorDefinitions>
+    <NMakeIncludeSearchPath>[options.AdditionalIncludeDirectories]</NMakeIncludeSearchPath>
+    <AdditionalOptions>[options.IntellisenseCommandLineOptions]</AdditionalOptions>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition=""'$(Configuration)|$(Platform)'=='[conf.Name]|[platformName]'"">
+    <NMakeCompile>
+      <NMakeCompileFileCommandLine>[conf.CustomBuildSettings.CompileFileCommand]</NMakeCompileFileCommandLine>
+    </NMakeCompile>
+  </ItemDefinitionGroup>
+";
+        // ~TinfoilBuildTool
+
         private const string _projectConfigurationsNasmTemplate =
     @"    <NASM>
       <PreprocessorDefinitions>[EscapeXML:options.PreprocessorDefinitions];%(PreprocessorDefinitions);$(PreprocessorDefinitions)</PreprocessorDefinitions>

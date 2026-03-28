@@ -2036,6 +2036,13 @@ namespace Sharpmake
                 public bool UseProjectConfigurationOutputDirectories = false;
                 // ~TinfoilBuildTool
 
+                // TinfoilBuildTool: Use TinfoilBuildTool makefile format
+                /// <summary>
+                /// Write project file using TinfoilBuildTool makefile format
+                /// </summary>
+                public bool UseTinfoilBuildToolMakefileFormat = false;
+                // ~TinfoilBuildTool
+
                 public bool IsResolved { get; private set; } = false;
 
                 internal void Resolve(Resolver resolver)

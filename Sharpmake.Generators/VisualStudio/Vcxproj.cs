@@ -97,6 +97,10 @@ namespace Sharpmake.Generators.VisualStudio
             }
             public IReadOnlyDictionary<Platform, IPlatformVcxproj> PresentPlatforms { get; }
 
+            // TinfoilBuildTool: Use TinfoilBuildTool makefile format
+            public bool UseTinfoilBuildToolMakefileFormat { get; set; } = false;
+            // ~TinfoilBuildTool
+
             public FastBuildMakeCommandGenerator FastBuildMakeCommandGenerator { get; }
 
             public GenerationContext(Builder builder, string projectPath, Project project, IEnumerable<Project.Configuration> projectConfigurations)
@@ -545,6 +549,9 @@ namespace Sharpmake.Generators.VisualStudio
                         }
                         else if (conf.CustomBuildSettings != null)
                         {
+                            // TinfoilBuildTool: Use TinfoilBuildTool makefile format
+                            context.UseTinfoilBuildToolMakefileFormat = conf.CustomBuildSettings.UseTinfoilBuildToolMakefileFormat;
+                            // ~TinfoilBuildTool
                             platformVcxproj.GenerateProjectConfigurationCustomMakeFile(context, fileGenerator);
                         }
                         else

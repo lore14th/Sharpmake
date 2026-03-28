@@ -48,6 +48,9 @@ namespace Sharpmake.Generators.VisualStudio
             public IReadOnlyDictionary<Project.Configuration, Options.ExplicitOptions> ProjectConfigurationOptions => _projectConfigurationOptions;
             public DevEnvRange DevelopmentEnvironmentsRange { get; }
             public IReadOnlyDictionary<Platform, IPlatformVcxproj> PresentPlatforms { get; }
+            // TinfoilBuildTool: Use TinfoilBuildTool makefile format
+            public bool UseTinfoilBuildToolMakefileFormat { get; set; } = false;
+            // ~TinfoilBuildTool
             public Resolver EnvironmentVariableResolver { get; internal set; }
             #endregion
 
