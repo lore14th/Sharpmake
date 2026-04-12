@@ -45,9 +45,9 @@ public class SharpmakeApplicationProject : SharpmakeBaseProject
         base.Configure(config, target);
         config.Output = Configuration.OutputType.DotNetConsoleApp; // override output type
 
-        config.AddPrivateDependency<SharpmakeCommonPlatformsProject>(target, DependencySetting.Default);
-        config.AddPrivateDependency<SharpmakeCoreProject>(target, DependencySetting.Default);
-        config.AddPrivateDependency<SharpmakeGeneratorsProject>(target, DependencySetting.Default);
+        config.AddPublicDependency<SharpmakeCommonPlatformsProject>(target, DependencySetting.Default);
+        config.AddPublicDependency<SharpmakeCoreProject>(target, DependencySetting.Default);
+        config.AddPublicDependency<SharpmakeGeneratorsProject>(target, DependencySetting.Default);
     }
 }
 
@@ -77,7 +77,7 @@ public class SharpmakeFunctionalTestsProject : SharpmakeBaseProject
     {
         base.Configure(config, target);
 
-        config.AddPrivateDependency<SharpmakeApplicationProject>(target, DependencySetting.Default);
+        config.AddPublicDependency<SharpmakeApplicationProject>(target, DependencySetting.Default);
     }
 }
 
@@ -93,7 +93,7 @@ public class SharpmakeGeneratorsProject : SharpmakeBaseProject
     {
         base.Configure(config, target);
 
-        config.AddPrivateDependency<SharpmakeCoreProject>(target, DependencySetting.Default);
+        config.AddPublicDependency<SharpmakeCoreProject>(target, DependencySetting.Default);
     }
 }
 
@@ -109,8 +109,8 @@ public class SharpmakeCommonPlatformsProject : SharpmakeBaseProject
     {
         base.Configure(config, target);
 
-        config.AddPrivateDependency<SharpmakeCoreProject>(target, DependencySetting.Default);
-        config.AddPrivateDependency<SharpmakeGeneratorsProject>(target, DependencySetting.Default);
+        config.AddPublicDependency<SharpmakeCoreProject>(target, DependencySetting.Default);
+        config.AddPublicDependency<SharpmakeGeneratorsProject>(target, DependencySetting.Default);
     }
 }
 
@@ -126,7 +126,7 @@ public class SharpmakeSamplesProject : SharpmakeBaseProject
     {
         base.Configure(config, target);
 
-        config.AddPrivateDependency<SharpmakeApplicationProject>(target, DependencySetting.Default);
+        config.AddPublicDependency<SharpmakeApplicationProject>(target, DependencySetting.Default);
     }
 }
 
@@ -142,8 +142,8 @@ public class SharpmakeUnitTestsProject : SharpmakeBaseProject
     {
         base.Configure(config, target);
 
-        config.AddPrivateDependency<SharpmakeCommonPlatformsProject>(target, DependencySetting.Default);
-        config.AddPrivateDependency<SharpmakeCoreProject>(target, DependencySetting.Default);
-        config.AddPrivateDependency<SharpmakeGeneratorsProject>(target, DependencySetting.Default);
+        config.AddPublicDependency<SharpmakeCommonPlatformsProject>(target, DependencySetting.Default);
+        config.AddPublicDependency<SharpmakeCoreProject>(target, DependencySetting.Default);
+        config.AddPublicDependency<SharpmakeGeneratorsProject>(target, DependencySetting.Default);
     }
 }
