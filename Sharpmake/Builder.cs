@@ -72,9 +72,8 @@ namespace Sharpmake
     // TinfoilBuildTool: Add extra command line arguments
     public class TinfoilBuildToolArguments
     {
-        public string TargetName = string.Empty;
         public string ProjectConfigurationClass = string.Empty;
-        public string DevEnvName = "vs2022";
+        public DevEnv BuildToolchain = DevEnv.vs2022;
     }
     // ~TinfoilBuildTool
 
