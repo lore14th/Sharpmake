@@ -45,6 +45,10 @@ namespace Sharpmake.Application
         private static int s_errorCount = 0;
         private static int s_warningCount = 0;
 
+        // TinfoilBuildTool: Disable Sharpmake logging
+        public static bool EnableLogging = true;
+        // ~TinfoilBuildTool
+
         public static void LogWrite(string format, params object[] args)
         {
             LogWrite(string.Format(format, args));
@@ -52,6 +56,15 @@ namespace Sharpmake.Application
 
         public static void LogWrite(string message)
         {
+            // TinfoilBuildTool: Disable Sharpmake logging
+            if (!EnableLogging)
+            {
+                // Let warnings and errors through the filter
+                if (!message.StartsWith("[WARNING]") && !message.StartsWith("[ERROR]"))
+                    return;
+            }
+            // ~TinfoilBuildTool
+
             string prefix = string.Empty;
 
             if (DebugEnable)
