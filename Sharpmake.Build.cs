@@ -115,6 +115,15 @@ public class SharpmakeCommonPlatformsProject : SharpmakeBaseProject
 }
 
 [Sharpmake.Compile]
+public class SharpmakePublicApiProject : SharpmakeBaseProject
+{
+    public SharpmakePublicApiProject() : base("Sharpmake.PublicApiTests", @"C4E8B3A2-5D7F-4E6B-9A2C-3D8F1E5B7A4C")
+    {
+        SourceRootPath = @"[project.SharpmakeCsPath]/Sharpmake.PublicApiTests";
+    }
+}
+
+[Sharpmake.Compile]
 public class SharpmakeSamplesProject : SharpmakeBaseProject
 {
     public SharpmakeSamplesProject() : base("Samples", @"60452228-D411-4461-91D7-0894482D940C")
