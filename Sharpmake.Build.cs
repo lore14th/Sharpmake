@@ -100,7 +100,7 @@ public class SharpmakeGeneratorsProject : SharpmakeBaseProject
 [Sharpmake.Compile]
 public class SharpmakeCommonPlatformsProject : SharpmakeBaseProject
 {
-    public SharpmakeCommonPlatformsProject() : base("Sharpmake.CommonPlatforms", @"6CA349ED-D54F-E547-E2AC-E11BEF4F21CF")
+    public SharpmakeCommonPlatformsProject() : base("Sharpmake.CommonPlatforms", @"3B476462-28E6-4640-4257-7942657699ED")
     {
         SourceRootPath = @"[project.SharpmakeCsPath]/Sharpmake.Platforms/Sharpmake.CommonPlatforms";
     }
