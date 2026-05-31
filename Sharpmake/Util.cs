@@ -25,6 +25,8 @@ namespace Sharpmake
 {
     public static partial class Util
     {
+        public static DateTime ProgramStartTime { get; } = DateTime.Now;
+
         public const string DoubleQuotes = @"""";
         public const string EscapedDoubleQuotes = @"\""";
 
@@ -328,48 +330,6 @@ namespace Sharpmake
 
         private static Dictionary<string, DateTime> ReadCleanupDatabase(string databaseFilename)
         {
-            // DEPRECATED CODE - TO BE REMOVED AFTER DEC 31TH 2024
-            string oldDatabaseFormatFilename = Path.ChangeExtension(databaseFilename, ".bin");
-            if (File.Exists(oldDatabaseFormatFilename))
-            {
-                try
-                {
-                    // Read database - This is simply a simple binary file containing the list of file and a version number.
-                    using (Stream readStream = new FileStream(oldDatabaseFormatFilename, FileMode.Open, FileAccess.Read, FileShare.None))
-                    using (BinaryReader binReader = new BinaryReader(readStream))
-                    {
-                        // Validate version number
-                        int version = binReader.ReadInt32();
-                        if (version == (int)CleanupDatabaseContent.DBVersions.BinaryFormatterVersion)
-                        {
-                            // Read the list of files.
-                            IFormatter formatter = new BinaryFormatter();
-                            string dbAsJson = binReader.ReadString();
-
-                            var tmpDbFiles = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, DateTime>>(dbAsJson, GetCleanupDatabaseJsonSerializerOptions());
-                            var dbFiles = tmpDbFiles.ToDictionary(kvp => kvp.Key, kvp => kvp.Value, StringComparer.InvariantCultureIgnoreCase);
-
-                            // Converting to new format.
-                            WriteCleanupDatabase(databaseFilename, dbFiles);
-                            return dbFiles;
-                        }
-                        else
-                        {
-                            LogWrite("Warning: found cleanup database in incompatible format v{0}, skipped.", version);
-                        }
-                    }
-                }
-                catch
-                {
-                    // nothing to do.
-                }
-                finally
-                {
-                    TryDeleteFile(oldDatabaseFormatFilename);
-                }
-            }
-            // END DEPRECATED CODE
-
             if (File.Exists(databaseFilename))
             {
                 try
@@ -518,6 +478,18 @@ namespace Sharpmake
                         {
                             if (!FilesToBeExplicitlyRemovedFromDB.Contains(filenameDate.Key))
                             {
+                                // Exclude files that were modified since the beginning of the current Sharpmake run.
+                                // This should avoid regressions when a generated file is not added to cleanup database anymore.
+                                // Example: replacing a call to Util.FileWriteIfDifferent() with File.WriteAll()
+                                // From the previous run, Util.FileWriteIfDifferent() added the file in the cleanup database.
+                                // In the new run, File.WriteAll() wrote the file, but the cleanup system would want to delete it.
+                                if (File.GetLastWriteTime(filenameDate.Key) >= ProgramStartTime)
+                                {
+                                    LogWrite(@"Skip deleting old file (updated during this run): {0}", filenameDate.Key);
+                                    newDbFiles.Add(filenameDate.Key, filenameDate.Value);
+                                    continue;
+                                }
+
                                 LogWrite(@"Deleting old file: {0}", filenameDate.Key);
                                 if (!TryDeleteFile(filenameDate.Key))
                                 {
@@ -1103,39 +1075,190 @@ namespace Sharpmake
             }
         }
 
+        [Obsolete("Use CreateOrUpdateSymbolicLink instead", error: true)]
         public static bool CreateSymbolicLink(string source, string target, bool isDirectory)
         {
-            bool success = false;
-            try
-            {
-                // In case the file is marked as readonly
-                if (File.Exists(source))
-                {
-                    File.SetAttributes(source, FileAttributes.Normal);
-                    File.Delete(source);
-                }
-                else if (Directory.Exists(source))
-                {
-                    Directory.Delete(source);
-                }
-
-                int releaseId = int.Parse(GetRegistryLocalMachineSubKeyValue(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ReleaseId", "0"));
-
-                int flags = isDirectory ? SYMBOLIC_LINK_FLAG_DIRECTORY : SYMBOLIC_LINK_FLAG_FILE;
-                if (releaseId >= 1703) // Verify that the Windows build is equal or above 1703, as SYMBOLIC_LINK_FLAG_ALLOW_UNPRIVILEGED_CREATE was introduced at that version. Using it on older version will cause an error 87 and symlinks won't be created
-                    flags |= SYMBOLIC_LINK_FLAG_ALLOW_UNPRIVILEGED_CREATE;
-
-                success = CreateSymbolicLink(source, target, flags);
-            }
-            catch { }
-            return success;
+            return false;
         }
 
-        [System.Runtime.InteropServices.DllImport("kernel32.dll")]
-        private static extern bool CreateSymbolicLink(string lpSymlinkFileName, string lpTargetFileName, int dwFlags);
-        private const int SYMBOLIC_LINK_FLAG_FILE = 0x0;
-        private const int SYMBOLIC_LINK_FLAG_DIRECTORY = 0x1;
-        private const int SYMBOLIC_LINK_FLAG_ALLOW_UNPRIVILEGED_CREATE = 0x2;
+        private static Lazy<bool> _UseElevatedShellForSymlinks = new (() => UseElevatedShellForSymlinks());
+        private static bool UseElevatedShellForSymlinks()
+        {
+            if (!OperatingSystem.IsWindows())
+                return false;
+
+            // Detect if we can create symlinks without elevation. We know a couple of cases where we can:
+            // 1) Running as administrator
+            // 2) Developer mode is enabled on Windows 10 and later
+            // 3) User is granted the SeCreateSymbolicLinkPrivilege privilege (typically via a group policy)
+            // We can test this by trying to create a temporary symlink and see if it works which.
+            // It is a lot simpler than trying to detect all those cases individually.
+            bool requiresElevation = true;
+            string tempSource = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            string tempTarget = null;
+            try
+            {
+                tempTarget = Path.GetTempFileName();
+                File.CreateSymbolicLink(tempSource, tempTarget);
+                requiresElevation = false;
+            }
+            catch
+            {
+            }
+            finally
+            {
+                try { File.Delete(tempSource); } catch { }
+                try { File.Delete(tempTarget); } catch { }
+            }
+
+            return requiresElevation;
+        }
+
+        public enum CreateOrUpdateSymbolicLinkResult
+        {
+            Created,
+            Updated,
+            AlreadyUpToDate
+        }
+
+        /// <summary>
+        /// Creates or updates a symbolic link from source to target.
+        /// </summary>
+        /// <remarks>
+        /// On Windows when not running as administrator, this method will attempt to use an elevated shell
+        /// to create the symbolic link (requires UAC elevation prompt). On other platforms or when running
+        /// as administrator, the managed APIs are used directly.
+        /// </remarks>
+        /// <param name="source">The path where the symbolic link will be created. Does not need to exist initially.</param>
+        /// <param name="target">The path the symbolic link will point to. Must exist.</param>
+        /// <param name="isDirectory">If true, creates a directory symbolic link; if false, creates a file symbolic link.</param>
+        /// <returns>
+        /// <see cref="CreateOrUpdateSymbolicLinkResult.Created"/> if a new symbolic link was created;
+        /// <see cref="CreateOrUpdateSymbolicLinkResult.Updated"/> if an existing symbolic link was updated to point to a different target;
+        /// <see cref="CreateOrUpdateSymbolicLinkResult.AlreadyUpToDate"/> if the symbolic link already points to the target.
+        /// </returns>
+        /// <exception cref="ArgumentException">Thrown if source or target paths are null or empty.</exception>
+        /// <exception cref="IOException">Thrown if source and target are the same path, or if link creation/update fails.</exception>
+        /// <exception cref="Exception">Thrown if the elevated shell fails to start (Windows only).</exception>
+        public static CreateOrUpdateSymbolicLinkResult CreateOrUpdateSymbolicLink(string source, string target, bool isDirectory)
+        {
+            if (string.IsNullOrWhiteSpace(source))
+                throw new ArgumentException("Source path cannot be null or empty", nameof(source));
+            if (string.IsNullOrWhiteSpace(target))
+                throw new ArgumentException("Target path cannot be null or empty", nameof(target));
+
+            // Note: Can't have a slash at end of path and replacing alternate slashes so that resolved link target comparison works correctly
+            target = Path.GetFullPath(target).TrimEnd(Path.DirectorySeparatorChar);
+            source = Path.GetFullPath(source).TrimEnd(Path.DirectorySeparatorChar);
+            if (source == target)
+            {
+                throw new IOException("Source and target paths are the same for symbolic link: " + source);
+            }
+
+            CreateOrUpdateSymbolicLinkResult result;
+            if (isDirectory)
+            {
+                if (Directory.Exists(source))
+                {
+                    var linkTarget = Directory.ResolveLinkTarget(source, false);
+                    if (linkTarget == null || linkTarget.FullName != target)
+                    {
+                        result = CreateOrUpdateSymbolicLinkResult.Updated;
+                        if (linkTarget == null)
+                        {
+                            Directory.Delete(source, true); // Not a symlink, delete recursively
+                        }
+                        else
+                        {
+                            Directory.Delete(source);
+                        }
+                    }
+                    else
+                    {
+                        result = CreateOrUpdateSymbolicLinkResult.AlreadyUpToDate;
+                    }
+                }
+                else
+                {
+                    result = CreateOrUpdateSymbolicLinkResult.Created;
+                }
+            }
+            else
+            {
+                if (File.Exists(source))
+                {
+                    var linkTarget = File.ResolveLinkTarget(source, false);
+                    if (linkTarget == null || linkTarget.FullName != target)
+                    {
+                        result = CreateOrUpdateSymbolicLinkResult.Updated;
+                        File.SetAttributes(source, FileAttributes.Normal);
+                        File.Delete(source);
+                    }
+                    else
+                    {
+                        result = CreateOrUpdateSymbolicLinkResult.AlreadyUpToDate;
+                    }
+                }
+                else
+                {
+                    result = CreateOrUpdateSymbolicLinkResult.Created;
+                }
+            }
+
+            switch (result)
+            {
+                case CreateOrUpdateSymbolicLinkResult.Updated:
+                    LogWrite($"Updating symbolic link: {source} => {target}");
+                    break;
+
+                case CreateOrUpdateSymbolicLinkResult.AlreadyUpToDate:
+                    LogWrite($"Symbolic link already up to date: {source} => {target}");
+                    return result; // nothing to do bail out
+
+                case CreateOrUpdateSymbolicLinkResult.Created:
+                    LogWrite($"Creating symbolic link: {source} => {target}");
+                    break;
+            }
+
+            // Create intermediate directories
+            Directory.CreateDirectory(Path.GetDirectoryName(source));
+
+            if (_UseElevatedShellForSymlinks.Value)
+            {
+                // Used to create symlink without requiring the whole process to be elevated
+                string command = $"mklink {(isDirectory ? "/D" : string.Empty)} \"{source}\" \"{target}\"";
+                string arguments = $"/C \"cd /D \"{Environment.CurrentDirectory}\" && {command}\"";
+                var processStartInfo = new ProcessStartInfo("cmd", arguments)
+                {
+                    UseShellExecute = true,
+                    Verb = "runas",
+                    WindowStyle = ProcessWindowStyle.Hidden
+                };
+                var process = Process.Start(processStartInfo);
+                if (process != null)
+                {
+                    process.WaitForExit();
+                    if (process.ExitCode != 0)
+                    {
+                        throw new IOException($"Failed creating or updating symbolic link with elevate shell, exited with code {process.ExitCode} for command: {command}");
+                    }
+                }
+                else
+                {
+                    throw new Exception($"Failed starting elevate shell to create or update symbolic link, command: {command}.");
+                }
+            }
+            else if (isDirectory)
+            {
+                Directory.CreateSymbolicLink(source, target);
+            }
+            else
+            {
+                File.CreateSymbolicLink(source, target);
+            }
+
+            return result;
+        }
 
         public static bool IsSymbolicLink(string path)
         {
@@ -1227,22 +1350,33 @@ namespace Sharpmake
             // We expect folder lib/clang to contain only one subfolder which name is the clang version
             // However in some cases like MacOS, there can be both "16" and "16.0.0", the latter being a symlink.
             // In that case return the shorter one, which matches what we find on other platforms.
-            var versionFolder = DirectoryGetDirectories(libDir)
+            var versionFolders = DirectoryGetDirectories(libDir)
                                 .Select(s => Path.GetFileName(s))
                                 .Where(s => Regex.IsMatch(s, @"^\d+?(\.\d+?\.\d+?)?$", RegexOptions.Singleline | RegexOptions.CultureInvariant))
                                 .OrderBy(s => s.Length)
                                 .ToList();
 
-            if (!versionFolder.Any())
+            if (!versionFolders.Any())
                 throw new Error($"Couldn't find a version number folder for clang in {llvmInstallDir}");
 
-            if (versionFolder.Count > 1 && versionFolder[1].StartsWith(versionFolder[0] + "."))
-                versionFolder.RemoveAt(1);
+            // Consider only short version folders if any, else use longer version folders.
+            // VS2019 uses long version like "12.0.0" while VS2022 uses short version like "19".
+            // Also since VS2022 version 17.13, its possible to have more than one version in the lib/clang folder.
+            // Depending on installed VS components. Return the highest version number found.
+            var shortVersionFolders = versionFolders.Where(s => !s.Contains('.')).ToList();
+            string version;
+            if (shortVersionFolders.Any())
+            {
+                // Can't use System.Version for major version only.
+                version = shortVersionFolders.Max(v => int.Parse(v)).ToString();
+            }
+            else
+            {
+                // Use System.Version comparer to get the highest version.
+                version = versionFolders.Select(v => Version.Parse(v)).Max().ToString();
+            }
 
-            if (versionFolder.Count != 1)
-                throw new NotImplementedException($"More than one version folder found in {llvmInstallDir}, the code doesn't handle that (yet).");
-
-            return versionFolder[0];
+            return version;
         }
 
         public class VsInstallation
@@ -1521,6 +1655,7 @@ namespace Sharpmake
                     case DevEnv.vs2017:
                     case DevEnv.vs2019:
                     case DevEnv.vs2022:
+                    case DevEnv.vs2026:
                         {
                             extension = ".vcxproj";
                         }

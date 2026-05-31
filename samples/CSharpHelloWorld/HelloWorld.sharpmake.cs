@@ -19,7 +19,7 @@ namespace CSharpHelloWorld
                     OutputType.Dll,
                     Blob.NoBlob,
                     BuildSystem.MSBuild,
-                    DotNetFramework.v4_6_1),
+                    DotNetFramework.v4_7_2),
                 new Target(
                     Platform.anycpu,
                     DevEnv.vs2022,
@@ -27,6 +27,26 @@ namespace CSharpHelloWorld
                     OutputType.Dll,
                     framework: DotNetFramework.net6_0)
             };
+        }
+    }
+
+    [Sharpmake.Generate]
+    public class HelloWorldReference : CSharpProject
+    {
+        public HelloWorldReference()
+        {
+            AddTargets(TargetTypes.GetDefaultTargets());
+            RootPath = @"[project.SharpmakeCsPath]\projects\[project.Name]";
+            SourceRootPath = @"[project.SharpmakeCsPath]\codebase\[project.Name]";
+        }
+
+        [Configure()]
+        public virtual void ConfigureAll(Configuration conf, Target target)
+        {
+            conf.ProjectFileName = "[project.Name].[target.DevEnv].[target.Framework]";
+            conf.ProjectPath = @"[project.RootPath]";
+            conf.Options.Add(Sharpmake.Options.CSharp.TreatWarningsAsErrors.Enabled);
+            conf.Output = Configuration.OutputType.DotNetClassLibrary;
         }
     }
 
@@ -53,6 +73,7 @@ namespace CSharpHelloWorld
             conf.CustomProperties.Add("CustomOptimizationProperty", $"Custom-{target.Optimization}");
 
             conf.Options.Add(Sharpmake.Options.CSharp.TreatWarningsAsErrors.Enabled);
+            conf.AddPublicDependency<HelloWorldReference>(target, DependencySetting.DefaultWithoutCopy);
         }
     }
 

@@ -5,7 +5,7 @@
             "Name": "CompileCommandDatabase",
             "CIs": [ "github", "gitlab" ],
             "OSs": [ "windows-2022" ],
-            "Frameworks": [ "net6.0" ],
+            "Frameworks": [ "net8.0" ],
             "Configurations": [ "debug" ],
             "TestFolder": "samples/CompileCommandDatabase",
             "Commands":
@@ -19,7 +19,7 @@
             "Name": "ConfigureOrder",
             "CIs": [ "github", "gitlab" ],
             "OSs": [ "windows-2022" ],
-            "Frameworks": [ "net6.0" ],
+            "Frameworks": [ "net8.0" ],
             "Configurations": [ "release" ],
             "TestFolder": "samples/ConfigureOrder",
             "Commands":
@@ -32,32 +32,58 @@
             ]
         },
         {
-            "Name": "CPPCLI",
-            "CIs": [ "github", "gitlab" ],
+            "Name": "CPPCLI-vs2019",
+            "CIs": [ "gitlab" ],
             "OSs": [ "windows-2019" ],
-            "Frameworks": [ "net6.0" ],
+            "Frameworks": [ "net8.0" ],
             "Configurations": [ "debug", "release" ],
             "TestFolder": "samples/CPPCLI",
             "Commands":
             [
                 "./RunSharpmake.ps1 -workingDirectory {testFolder} -sharpmakeFile \"CLRTest.sharpmake.cs\" -framework {framework}",
-                "./Compile.ps1 -slnOrPrjFile \"CPPCLI.vs2017.v4_6_2.sln\" -configuration {configuration} -platform Win32 -WorkingDirectory \"{testFolder}/projects\" -VsVersion {os} -compiler MsBuild",
-                "./{testFolder}/projects/output/vs2017/v4_6_2/{configuration}/TestCSharpConsole.exe",
-                "./Compile.ps1 -slnOrPrjFile \"CPPCLI.vs2019.v4_7_2.sln\" -configuration {configuration} -platform Win32 -WorkingDirectory \"{testFolder}/projects\" -VsVersion {os} -compiler MsBuild",
-                "./{testFolder}/projects/output/vs2019/v4_7_2/{configuration}/TestCSharpConsole.exe"
+                "./Compile.ps1 -slnOrPrjFile \"CPPCLI.{VsVersionSuffix}.v4_7_2.sln\" -configuration {configuration} -platform Win32 -WorkingDirectory \"{testFolder}/projects\" -VsVersion {os} -compiler MsBuild",
+                "./{testFolder}/projects/output/{VsVersionSuffix}/v4_7_2/{configuration}/TestCSharpConsole.exe"
+            ]
+        },
+        {
+            "Name": "CPPCLI-vs2022",
+            "CIs": [ "github", "gitlab" ],
+            "OSs": [ "windows-2022" ],
+            "Frameworks": [ "net8.0" ],
+            "Configurations": [ "debug", "release" ],
+            "TestFolder": "samples/CPPCLI",
+            "Commands":
+            [
+                "./RunSharpmake.ps1 -workingDirectory {testFolder} -sharpmakeFile \"CLRTest.sharpmake.cs\" -framework {framework}",
+                "./Compile.ps1 -slnOrPrjFile \"CPPCLI.{VsVersionSuffix}.v4_8.sln\" -configuration {configuration} -platform Win32 -WorkingDirectory \"{testFolder}/projects\" -VsVersion {os} -compiler MsBuild",
+                "./{testFolder}/projects/output/{VsVersionSuffix}/v4_8/{configuration}/TestCSharpConsole.exe"
+            ]
+        },
+        {
+            "Name": "CPPForcePackageReference",
+            "CIs": [ "github", "gitlab" ],
+            "OSs": [ "windows-2022" ],
+            "Frameworks": [ "net8.0" ],
+            "Configurations": [ "debug", "release" ],
+            "TestFolder": "samples/CPPForcePackageReference",
+            "Commands":
+            [
+                "./RunSharpmake.ps1 -workingDirectory {testFolder} -sharpmakeFile \"CPPForcePackageReference.sharpmake.cs\" -framework {framework}",
+                "./Compile.ps1 -slnOrPrjFile \"CPPForcePackageReference_{VsVersionSuffix}_win64.sln\" -configuration {configuration} -platform \"x64\" -WorkingDirectory \"{testFolder}/projects\" -VsVersion {os} -compiler MsBuild",
+                "&'./{testFolder}/projects/output/win64/{configuration}/cppforcepackagereference.exe'"
             ]
         },
         {
             "Name": "CSharpHelloWorld_old_Frameworks",
             "CIs": [ "github", "gitlab" ],
             "OSs": [ "windows-2019" ],
-            "Frameworks": [ "net6.0" ],
+            "Frameworks": [ "net8.0" ],
             "Configurations": [ "debug", "release" ],
             "TestFolder": "samples/CSharpHelloWorld",
             "Commands":
             [
                 "./RunSharpmake.ps1 -workingDirectory {testFolder} -sharpmakeFile \"HelloWorld.sharpmake.cs\" -framework {framework}",
-                "./Compile.ps1 -slnOrPrjFile \"HelloWorldSolution.vs2017.v4_6_1.sln\" -configuration {configuration} -platform \"Any CPU\" -WorkingDirectory \"{testFolder}/projects\" -VsVersion {os} -compiler MsBuild",
+                "./Compile.ps1 -slnOrPrjFile \"HelloWorldSolution.vs2017.v4_7_2.sln\" -configuration {configuration} -platform \"Any CPU\" -WorkingDirectory \"{testFolder}/projects\" -VsVersion {os} -compiler MsBuild",
                 "&'./{testFolder}/projects/helloworld/output/anycpu/{configuration}/the other name.exe'"
             ]
         },
@@ -65,7 +91,7 @@
             "Name": "CSharpHelloWorld",
             "CIs": [ "github", "gitlab" ],
             "OSs": [ "windows-2022" ],
-            "Frameworks": [ "net6.0" ],
+            "Frameworks": [ "net8.0" ],
             "Configurations": [ "debug", "release" ],
             "TestFolder": "samples/CSharpHelloWorld",
             "Commands":
@@ -79,7 +105,7 @@
             "Name": "CSharpImports",
             "CIs": [ "github", "gitlab" ],
             "OSs": [ "windows-2019", "windows-2022" ],
-            "Frameworks": [ "net6.0" ],
+            "Frameworks": [ "net8.0" ],
             "Configurations": [ "debug", "release" ],
             "TestFolder": "samples/CSharpImports",
             "Commands":
@@ -93,7 +119,7 @@
             "Name": "CSharpVsix",
             "CIs": [ "github", "gitlab" ],
             "OSs": [ "windows-2019", "windows-2022" ],
-            "Frameworks": [ "net6.0" ],
+            "Frameworks": [ "net8.0" ],
             "Configurations": [ "debug", "release" ],
             "TestFolder": "samples/CSharpVsix",
             "Commands":
@@ -106,34 +132,34 @@
             "Name": "CustomBuildStep",
             "CIs": [ "github", "gitlab" ],
             "OSs": [ "windows-2022" ],
-            "Frameworks": [ "net6.0" ],
-            "Configurations": [ "debug", "release" ],
+            "Frameworks": [ "net8.0" ],
+            "Configurations": [ "debug", "release", "FastBuild Debug" ],
             "TestFolder": "samples/CustomBuildStep",
             "Commands":
             [
                 "./RunSharpmake.ps1 -workingDirectory {testFolder} -sharpmakeFile \"CustomBuildStep.sharpmake.cs\" -framework {framework}",
-                "./Compile.ps1 -slnOrPrjFile \"custombuildstepsolution_{VsVersionSuffix}_win64.sln\" -configuration {configuration} -platform \"x64\" -WorkingDirectory \"{testFolder}/projects\" -VsVersion {os} -compiler MsBuild",
+                "./Compile.ps1 -slnOrPrjFile \"custombuildstepsolution_{VsVersionSuffix}_win64.sln\" -configuration \"{configuration}\" -platform \"x64\" -WorkingDirectory \"{testFolder}/projects\" -VsVersion {os} -compiler MsBuild",
                 "&'./{testFolder}/projects/output/win64/{configuration}/custombuildstep.exe'"
             ]
         },
         {
             "Name": "CSharpWCF",
             "CIs": [ "github", "gitlab" ],
-            "OSs": [ "windows-2019", "windows-2022" ],
-            "Frameworks": [ "net6.0" ],
+            "OSs": [ "windows-2022" ],
+            "Frameworks": [ "net8.0" ],
             "Configurations": [ "debug", "release" ],
             "TestFolder": "samples/CSharpWCF",
             "Commands":
             [
                 "./RunSharpmake.ps1 -workingDirectory {testFolder} -sharpmakeFile \"CSharpWCF.sharpmake.cs\" -framework {framework}",
-                "./Compile.ps1 -slnOrPrjFile \"CSharpWCFSolution.vs2015.v4_5_2.sln\" -configuration {configuration} -platform \"Any CPU\" -WorkingDirectory \"{testFolder}/projects\" -VsVersion {os} -compiler MsBuild"
+                "./Compile.ps1 -slnOrPrjFile \"CSharpWCFSolution.vs2022.v4_7_2.sln\" -configuration {configuration} -platform \"Any CPU\" -WorkingDirectory \"{testFolder}/projects\" -VsVersion {os} -compiler MsBuild"
             ]
         },
         {
             "Name": "FastBuildSimpleExecutable",
             "CIs": [ "github", "gitlab" ],
             "OSs": [ "windows-2019", "windows-2022" ],
-            "Frameworks": [ "net6.0" ],
+            "Frameworks": [ "net8.0" ],
             "Configurations": [ "debug", "release" ],
             "TestFolder": "samples/FastBuildSimpleExecutable",
             "Commands":
@@ -147,7 +173,7 @@
             "Name": "FastBuildDuplicateFile",
             "CIs": [ "github", "gitlab" ],
             "OSs": [ "windows-2019", "windows-2022" ],
-            "Frameworks": [ "net6.0" ],
+            "Frameworks": [ "net8.0" ],
             "Configurations": [ "debug", "release" ],
             "TestFolder": "samples/FastBuildDuplicateFile",
             "Commands":
@@ -161,7 +187,7 @@
             "Name": "HelloAndroid",
             "CIs": [],
             "OSs": [ "windows-2019" ],
-            "Frameworks": [ "net6.0" ],
+            "Frameworks": [ "net8.0" ],
             "Configurations": [ "debug", "release" ],
             "TestFolder": "samples/HelloAndroid",
             "Commands":
@@ -175,7 +201,7 @@
             "Name": "HelloClangCl",
             "CIs": [ "github", "gitlab" ],
             "OSs": [ "windows-2019", "windows-2022" ],
-            "Frameworks": [ "net6.0" ],
+            "Frameworks": [ "net8.0" ],
             "Configurations": [ "debug", "release" ],
             "TestFolder": "samples/HelloClangCl",
             "Commands":
@@ -195,7 +221,7 @@
             "Name": "HelloEvents",
             "CIs": [ "github", "gitlab" ],
             "OSs": [ "windows-2019", "windows-2022" ],
-            "Frameworks": [ "net6.0" ],
+            "Frameworks": [ "net8.0" ],
             "Configurations": [ "debug", "release" ],
             "TestFolder": "samples/HelloEvents",
             "Commands":
@@ -211,7 +237,7 @@
             "Name": "HelloWorld",
             "CIs": [ "github", "gitlab" ],
             "OSs": [ "windows-2019", "windows-2022" ],
-            "Frameworks": [ "net6.0" ],
+            "Frameworks": [ "net8.0" ],
             "Configurations": [ "debug", "release" ],
             "TestFolder": "samples/HelloWorld",
             "Commands":
@@ -227,7 +253,7 @@
             "Name": "JumboBuild",
             "CIs": [ "github", "gitlab" ],
             "OSs": [ "windows-2019", "windows-2022" ],
-            "Frameworks": [ "net6.0" ],
+            "Frameworks": [ "net8.0" ],
             "Configurations": [ "debug", "release" ],
             "TestFolder": "samples/JumboBuild",
             "Commands":
@@ -241,7 +267,7 @@
             "Name": "NetCore-DotNetCoreFrameworkHelloWorld",
             "CIs": [ "gitlab" ],
             "OSs": [ "windows-2022" ],
-            "Frameworks": [ "net6.0" ],
+            "Frameworks": [ "net8.0" ],
             "Configurations": [ "debug", "release" ],
             "TestFolder": "samples/NetCore/DotNetCoreFrameworkHelloWorld",
             "Commands":
@@ -260,16 +286,16 @@
             "Name": "NetCore-DotNetFrameworkHelloWorld",
             "CIs": [ "github", "gitlab" ],
             "OSs": [ "windows-2019", "windows-2022" ],
-            "Frameworks": [ "net6.0" ],
+            "Frameworks": [ "net8.0" ],
             "Configurations": [ "debug", "release" ],
             "TestFolder": "samples/NetCore/DotNetFrameworkHelloWorld",
             "Commands":
             [
                 "./RunSharpmake.ps1 -workingDirectory {testFolder} -sharpmakeFile \"HelloWorld.sharpmake.cs\" -framework {framework}",
                 "./Compile.ps1 -slnOrPrjFile \"HelloWorldMultiFrameworkSolution.vs2019.sln\" -configuration {configuration} -platform \"Any CPU\" -WorkingDirectory \"{testFolder}/projects\" -VsVersion {os} -compiler MsBuild",
-                "&'./{testFolder}/projects/helloworldmultiframework/output/anycpu/{configuration}/net461/the other name.exe'",
                 "&'./{testFolder}/projects/helloworldmultiframework/output/anycpu/{configuration}/net472/the other name.exe'",
-                "./Compile.ps1 -slnOrPrjFile \"HelloWorldSolution.vs2019.v4_7_2.sln\" -configuration {configuration} -platform \"Any CPU\" -WorkingDirectory \"{testFolder}/projects\" -VsVersion {os} -compiler MsBuild",
+                "&'./{testFolder}/projects/helloworldmultiframework/output/anycpu/{configuration}/net48/the other name.exe'",
+                "./Compile.ps1 -slnOrPrjFile \"HelloWorldSolution.vs2019.v4_8.sln\" -configuration {configuration} -platform \"Any CPU\" -WorkingDirectory \"{testFolder}/projects\" -VsVersion {os} -compiler MsBuild",
                 "&'./{testFolder}/projects/helloworld/output/vs2019/{configuration}/the other name.exe'"
             ]
         },
@@ -277,21 +303,21 @@
             "Name": "NetCore-DotNetFrameworkHelloWorld_OldFrameworks",
             "CIs": [ "github", "gitlab" ],
             "OSs": [ "windows-2019" ],
-            "Frameworks": [ "net6.0" ],
+            "Frameworks": [ "net8.0" ],
             "Configurations": [ "debug", "release" ],
             "TestFolder": "samples/NetCore/DotNetFrameworkHelloWorld",
             "Commands":
             [
                 "./RunSharpmake.ps1 -workingDirectory {testFolder} -sharpmakeFile \"HelloWorld.sharpmake.cs\" -framework {framework}",
-                "./Compile.ps1 -slnOrPrjFile \"HelloWorldSolution.vs2017.v4_6_1.sln\" -configuration {configuration} -platform \"Any CPU\" -WorkingDirectory \"{testFolder}/projects\" -VsVersion {os} -compiler MsBuild",
-                "&'./{testFolder}/projects/helloworld/output/vs2017/{configuration}/the other name.exe'"
+                "./Compile.ps1 -slnOrPrjFile \"HelloWorldSolution.vs2019.v4_7_2.sln\" -configuration {configuration} -platform \"Any CPU\" -WorkingDirectory \"{testFolder}/projects\" -VsVersion {os} -compiler MsBuild",
+                "&'./{testFolder}/projects/helloworld/output/vs2019/{configuration}/the other name.exe'"
             ]
         },
         {
             "Name": "NetCore-DotNetMultiFrameworksHelloWorld",
             "CIs": [ "gitlab" ],
             "OSs": [ "windows-2019", "windows-2022" ],
-            "Frameworks": [ "net6.0" ],
+            "Frameworks": [ "net8.0" ],
             "Configurations": [ "debug", "release" ],
             "TestFolder": "samples/NetCore/DotNetMultiFrameworksHelloWorld",
             "Commands":
@@ -299,14 +325,14 @@
                 "./RunSharpmake.ps1 -workingDirectory {testFolder} -sharpmakeFile \"HelloWorld.sharpmake.cs\" -framework {framework}",
                 "./Compile.ps1 -slnOrPrjFile \"HelloWorldMultiFrameworksSolution.vs2019.sln\" -configuration {configuration} -platform \"Any CPU\" -WorkingDirectory \"{testFolder}/projects\" -VsVersion {os} -compiler MsBuild",
                 "./RunProcess.ps1 -exeToRun dotnet -workingDirectory \"{testFolder}/projects/helloworldmultiframeworks/output/anycpu/{configuration}/netcoreapp3.1\" -arguments \"HelloWorldMultiFrameworks.dll\"",
-                "&'./{testFolder}/projects/helloworldmultiframeworks/output/anycpu/{configuration}/net461/HelloWorldMultiFrameworks.exe'"
+                "&'./{testFolder}/projects/helloworldmultiframeworks/output/anycpu/{configuration}/net472/HelloWorldMultiFrameworks.exe'"
             ]
         },
         {
             "Name": "NetCore-DotNetOSMultiFrameworksHelloWorld",
             "CIs": [ "github", "gitlab" ],
             "OSs": [ "windows-2022" ],
-            "Frameworks": [ "net6.0" ],
+            "Frameworks": [ "net8.0" ],
             "Configurations": [ "debug", "release" ],
             "TestFolder": "samples/NetCore/DotNetOSMultiFrameworksHelloWorld",
             "Commands":
@@ -321,7 +347,7 @@
             "Name": "PackageReferences",
             "CIs": [ "github", "gitlab" ],
             "OSs": [ "windows-2019", "windows-2022" ],
-            "Frameworks": [ "net6.0" ],
+            "Frameworks": [ "net8.0" ],
             "Configurations": [ "debug", "release" ],
             "TestFolder": "samples/PackageReferences",
             "Commands":
@@ -337,7 +363,7 @@
             "Name": "QTFileCustomBuild",
             "CIs": [],
             "OSs": [ "windows-2019" ],
-            "Frameworks": [ "net6.0" ],
+            "Frameworks": [ "net8.0" ],
             "Configurations": [ "debug", "release" ],
             "TestFolder": "samples/QTFileCustomBuild",
             "Commands":
@@ -356,7 +382,7 @@
             "Name": "SimpleExeLibDependency",
             "CIs": [ "github", "gitlab" ],
             "OSs": [ "windows-2022" ],
-            "Frameworks": [ "net6.0" ],
+            "Frameworks": [ "net8.0" ],
             "Configurations": [ "debug" ],
             "TestFolder": "samples/SimpleExeLibDependency",
             "Commands":
@@ -370,7 +396,7 @@
             "Name": "vcpkg",
             "CIs": [ "github", "gitlab" ],
             "OSs": [ "windows-2019", "windows-2022" ],
-            "Frameworks": [ "net6.0" ],
+            "Frameworks": [ "net8.0" ],
             "Configurations": [ "debug", "release" ],
             "TestFolder": "samples/vcpkg",
             "Commands":
@@ -387,7 +413,7 @@
             "Name": "HelloLinux",
             "CIs": [ "github", "gitlab" ],
             "OSs": [ "linux" ],
-            "Frameworks": [ "net6.0" ],
+            "Frameworks": [ "net8.0" ],
             "Configurations": [ "debug", "release" ],
             "TestFolder": "samples/HelloLinux",
             "Commands":
@@ -400,7 +426,7 @@
             "Name": "HelloXCode",
             "CIs": [ "github", "gitlab" ],
             "OSs": [ "macos" ],
-            "Frameworks": [ "net6.0" ],
+            "Frameworks": [ "net8.0" ],
             "Configurations": [ "debug", "release" ],
             "TestFolder": "samples/HelloXCode",
             "Commands":
@@ -418,7 +444,7 @@
             "Name": "XCodeProjects",
             "CIs": [ "gitlab" ],
             "OSs": [ "macos" ],
-            "Frameworks": [ "net6.0" ],
+            "Frameworks": [ "net8.0" ],
             "Configurations": [ "debug", "release" ],
             "TestFolder": "samples/XCodeProjects",
             "Commands":
@@ -488,39 +514,25 @@
             ]
         },
         {
-            "Name": "HelloIOS-github",
-            "CIs": [ "github" ],
+            "Name": "HelloIOS",
+            "CIs": [ "github", "gitlab" ],
             "OSs": [ "macos" ],
-            "Frameworks": [ "net6.0" ],
+            "Frameworks": [ "net8.0" ],
             "Configurations": [ "debug", "release" ],
             "TestFolder": "samples/HelloIOS",
             "Commands":
             [
                 "xcodebuild -version",
                 "./RunSharpmake.ps1 -workingDirectory {testFolder} -sharpmakeFile \"HelloIOS.Main.sharpmake.cs\" -framework {framework}",
-                "xcodebuild build-for-testing CODE_SIGNING_ALLOWED=NO -workspace {testFolder}/codebase/temp/solutions/HelloIOS_iOS.xcworkspace -configuration {configuration} -scheme exe_iOS -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 15 Pro'",
-                "xcodebuild test-without-building  -workspace {testFolder}/codebase/temp/solutions/HelloIOS_iOS.xcworkspace -configuration {configuration} -scheme exe_iOS -destination 'platform=iOS Simulator,name=iPhone 15 Pro' -derivedDataPath {testFolder}/test; $global:LastExitCode = 0"
-            ]
-        },
-        {
-            "Name": "HelloIOS-gitlab",
-            "CIs": [ "gitlab" ],
-            "OSs": [ "macos" ],
-            "Frameworks": [ "net6.0" ],
-            "Configurations": [ "debug", "release" ],
-            "TestFolder": "samples/HelloIOS",
-            "Commands":
-            [
-                "xcodebuild -version",
-                "./RunSharpmake.ps1 -workingDirectory {testFolder} -sharpmakeFile \"HelloIOS.Main.sharpmake.cs\" -framework {framework}",
-                "xcodebuild build-for-testing CODE_SIGNING_ALLOWED=NO -workspace {testFolder}/codebase/temp/solutions/HelloIOS_iOS.xcworkspace -configuration {configuration} -scheme exe_iOS -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 14 Pro' test -derivedDataPath {testFolder}/test"
+                "xcodebuild build-for-testing CODE_SIGNING_ALLOWED=NO -workspace {testFolder}/codebase/temp/solutions/HelloIOS_iOS.xcworkspace -configuration {configuration} -scheme exe_iOS -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 16 Pro'",
+                "xcodebuild test-without-building  -workspace {testFolder}/codebase/temp/solutions/HelloIOS_iOS.xcworkspace -configuration {configuration} -scheme exe_iOS -destination 'platform=iOS Simulator,name=iPhone 16 Pro' -derivedDataPath {testFolder}/test; $global:LastExitCode = 0"
             ]
         },
         {
             "Name": "HelloAssemblyNasm",
             "CIs": [ "github", "gitlab" ],
             "OSs": [ "windows-2022" ],
-            "Frameworks": [ "net6.0" ],
+            "Frameworks": [ "net8.0" ],
             "Configurations": [ "debug", "release" ],
             "TestFolder": "samples/HelloAssemblyNasm",
             "Commands":
@@ -529,6 +541,6 @@
                 "./Compile.ps1 -slnOrPrjFile \"helloassemblynasm_{VsVersionSuffix}_win64_msbuild.sln\" -configuration {configuration} -platform \"x64\" -WorkingDirectory \"{testFolder}/projects\" -VsVersion {os} -compiler MsBuild",
                 "&'./{testFolder}/projects/output/win64/{configuration}/HelloAssemblyNasmExecutable.exe'"
             ]
-        },
+        }
     ]
 }

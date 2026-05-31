@@ -66,16 +66,21 @@ Settings
     .ConcurrencyPerJobMiB = [fastBuildConcurrencyPerJobMiB]
 ]
 ";
+                public static string AllowCaching = @"
+    .AllowCaching = [fastBuildAllowCaching]
+";
 
                 public const string WinEnvironment =
 @"    #import TMP
     #import TEMP
     #import USERPROFILE
+    #import COMSPEC
     .Environment =
     {
         ""TMP=$TMP$"",
         ""TEMP=$TEMP$"",
         ""USERPROFILE=$USERPROFILE$"",
+        ""COMSPEC=$COMSPEC$"",
         ""SystemRoot=[fastBuildSystemRoot]""
         ""PATH=[fastBuildPATH]""
 [envAdditionalVariables]
@@ -351,6 +356,7 @@ Compiler( '[fastBuildNasmCompilerName]' )
                 public static string LibrarianOptionsClang = @"
     .LibrarianOutput        = '[fastBuildOutputFile]'
     .LibrarianOptions       = 'rcs[cmdLineOptions.UseThinArchives] ""%2"" ""%1""'
+                            + ' [options.AdditionalLibrarianOptions]'
 
 ";
 
@@ -441,6 +447,8 @@ Compiler( '[fastBuildNasmCompilerName]' )
             + ' [cmdLineOptions.OmitFramePointers]'
             + ' [cmdLineOptions.EnableFiberSafeOptimizations]'
             + ' [cmdLineOptions.CompilerWholeProgramOptimization]'
+            + ' [cmdLineOptions.GenerateProfileGuidedOptimizationData]'
+            + ' [cmdLineOptions.UseProfileGuidedOptimizationData]'
             + ' [options.AdditionalCompilerOptimizeOptions]'
 ";
 

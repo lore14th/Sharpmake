@@ -14,7 +14,14 @@ System.String
 $samplesDef = Get-Content -Raw -Path 'SamplesDef.json' | ConvertFrom-Json
 
 # Transform into a hash table with an entry for each samples.
-$samplesPipeline = @{}
+$samplesPipeline = @{
+    include = @{
+        project = "ubi/runner/ci/templates"
+        ref = "1.0.7"
+        file = "ubi_runner.yml"
+    }
+}
+
 foreach ($sample in $samplesDef.Samples)
 {
     if ($sample.CIs.Contains('gitlab'))
@@ -43,7 +50,7 @@ foreach ($sample in $samplesDef.Samples)
                                 }
                             }
                             $osCompilationName = 'linux'
-                            
+
                             # Install Powershell on Alpine (https://learn.microsoft.com/en-us/powershell/scripting/install/install-alpine?view=powershell-7.2)
                             # Required to run RunSample.ps1.
                             $script += @(
@@ -59,7 +66,9 @@ foreach ($sample in $samplesDef.Samples)
                         'macos'
                         {
                             $osProperties = @{
-                                tags = @( 'square_mac' )
+                                # Our samples are sensible to Xcode version.
+                                # Explicitly request Xcode 16.
+                                extends = @( '.ubi_runner_mac_macos15_xcode16' )
                             }
                             $osCompilationName = 'mac'
                         }
@@ -83,13 +92,14 @@ foreach ($sample in $samplesDef.Samples)
                     switch ($sample.Name)
                     {
                         'QTFileCustomBuild'
-                        {    
+                        {
                             $script += 'choco install python3 --version 3.10.6 --side-by-side -y --no-progress'
                         }
                     }
 
-                    
-                    $script += "pwsh ./RunSample.ps1 -sampleName ""$($sample.Name)"" -configuration $configuration -framework $framework -os $os -vsVersionSuffix $vsVersionSuffix"
+
+                    # Use PowerShell array syntax to avoid quoting issues with spaces in configuration
+                    $script += "pwsh -Command `"& './RunSample.ps1' -sampleName '$($sample.Name)' -configuration '$configuration' -framework '$framework' -os '$os' -vsVersionSuffix '$vsVersionSuffix'`""
 
                     # Merge sample properties into a single hash table.
                     $sampleJob = $osProperties + @{
@@ -99,7 +109,7 @@ foreach ($sample in $samplesDef.Samples)
                             expire_in = '1 day'
                         }
                         needs = [PSCustomObject]@{
-                            pipeline = '$PARENT_PIPELINE_ID'
+                            pipeline = $env:CI_PIPELINE_ID
                             job = "compilation:${osCompilationName}: [release]"
                         }
                         script = $script

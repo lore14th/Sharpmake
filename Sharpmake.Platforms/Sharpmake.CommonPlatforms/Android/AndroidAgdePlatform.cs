@@ -132,6 +132,7 @@ namespace Sharpmake
                         case DevEnv.vs2017:
                         case DevEnv.vs2019:
                         case DevEnv.vs2022:
+                        case DevEnv.vs2026:
                             {
                                 // _PlatformFolder override is not enough for android, we need to know the AdditionalVCTargetsPath
                                 // Note that AdditionalVCTargetsPath is not officially supported by vs2017, but we use the variable anyway for convenience and consistency
@@ -622,7 +623,25 @@ namespace Sharpmake
 
             protected override IEnumerable<string> GetIncludePathsImpl(IGenerationContext context)
             {
-                return base.GetIncludePathsImpl(context);
+                var includePaths = new OrderableStrings();
+                includePaths.AddRange(context.Configuration.IncludePrivatePaths);
+                includePaths.AddRange(context.Configuration.IncludePaths);
+                includePaths.AddRange(context.Configuration.DependenciesIncludePaths);
+
+                includePaths.Sort();
+                return includePaths;
+            }
+
+            protected override IEnumerable<IncludeWithPrefix> GetPlatformIncludePathsWithPrefixImpl(IGenerationContext context)
+            {
+                var systemIncludes = new OrderableStrings();
+                systemIncludes.AddRange(context.Configuration.DependenciesIncludeSystemPaths);
+                systemIncludes.AddRange(context.Configuration.IncludeSystemPaths);
+
+                systemIncludes.Sort();
+
+                const string cmdLineIncludePrefix = "-isystem";
+                return systemIncludes.Select(path => new IncludeWithPrefix(cmdLineIncludePrefix, path));
             }
 
             public override IEnumerable<string> GetLibraryPaths(IGenerationContext context)

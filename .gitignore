@@ -18,6 +18,8 @@ sharpmakeautocleanupdb*.bin
 *.user
 *.userosscache
 *.sln.docstates
+*.metaproj
+*.metaproj.tmp
 *.nuget.targets
 *.nuget.props
 
@@ -59,5 +61,13 @@ Sharpmake.Application.args.json
 # Desktop Services Store on MacOS
 **/.DS_Store
 
+# Claude and other AI localconfig files below
+.claude/settings.local.json
+
+# Verify snapshot files
+*.received.*
+
+# TinfoilBuildTool: Additional ignores
 # Ignore command line args extension files
 *.args.json
+# ~TinfoilBuildTool

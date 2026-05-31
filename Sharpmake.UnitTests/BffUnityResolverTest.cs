@@ -46,7 +46,7 @@ namespace Sharpmake.UnitTests
                     "SimpleProject_vs2019_Release : SimpleProject_vs2019_Debug_Release_unity", // but different names because of different conf.FastBuildUnityUseRelativePaths from vs2017.
                     "SimpleProject_vs2019_Retail : SimpleProject_vs2019_Retail_unity",
                 };
-            CollectionAssert.AreEqual(expectedLogNames, unityLogNames);
+            Assert.That(unityLogNames, Is.EqualTo(expectedLogNames));
         }
 
         [Test]
@@ -57,14 +57,14 @@ namespace Sharpmake.UnitTests
             var unityLogNames = GetProjectUnityLogNames();
 
             var expectedLogNames = new List<string> {
-                    "SimpleProject_vs2017_Debug : SimpleProject_unity_C301FCDB",   // Debug and Release have the same unity config, so hash is identical.
-                    "SimpleProject_vs2017_Release : SimpleProject_unity_C301FCDB",
-                    "SimpleProject_vs2017_Retail : SimpleProject_unity_0BAACBF5",
-                    "SimpleProject_vs2019_Debug : SimpleProject_unity_D68FD759",   // vs2019 values follow same pattern (debug == release),
-                    "SimpleProject_vs2019_Release : SimpleProject_unity_D68FD759", // but different hash values because of different conf.FastBuildUnityUseRelativePaths from vs2017.
-                    "SimpleProject_vs2019_Retail : SimpleProject_unity_3DFB929D",
+                    "SimpleProject_vs2017_Debug : SimpleProject_unity_2C5E666F",   // Debug and Release have the same unity config, so hash is identical.
+                    "SimpleProject_vs2017_Release : SimpleProject_unity_2C5E666F",
+                    "SimpleProject_vs2017_Retail : SimpleProject_unity_2A6BF6F4",
+                    "SimpleProject_vs2019_Debug : SimpleProject_unity_9590105D",   // vs2019 values follow same pattern (debug == release),
+                    "SimpleProject_vs2019_Release : SimpleProject_unity_9590105D", // but different hash values because of different conf.FastBuildUnityUseRelativePaths from vs2017.
+                    "SimpleProject_vs2019_Retail : SimpleProject_unity_8B4A18D4",
                 };
-            CollectionAssert.AreEqual(expectedLogNames, unityLogNames);
+            Assert.That(unityLogNames, Is.EqualTo(expectedLogNames));
         }
 
         [Test]
@@ -75,14 +75,14 @@ namespace Sharpmake.UnitTests
             var unityLogNames = GetProjectUnityLogNames();
 
             var expectedLogNames = new List<string> {
-                    "SimpleProject_vs2017_Debug : SimpleProject_unity_41974D6F",   // Debug and Release have the same unity config, so hash is identical.
-                    "SimpleProject_vs2017_Release : SimpleProject_unity_41974D6F",
-                    "SimpleProject_vs2017_Retail : SimpleProject_unity_55FBF013",
-                    "SimpleProject_vs2019_Debug : SimpleProject_unity_32D177F1",   // vs2019 values follow same pattern (debug == release),
-                    "SimpleProject_vs2019_Release : SimpleProject_unity_32D177F1", // but different hash values because of different conf.FastBuildUnityUseRelativePaths from vs2017.
-                    "SimpleProject_vs2019_Retail : SimpleProject_unity_CFC9B4D5",
+                    "SimpleProject_vs2017_Debug : SimpleProject_unity_08CA3A7A",   // Debug and Release have the same unity config, so hash is identical.
+                    "SimpleProject_vs2017_Release : SimpleProject_unity_08CA3A7A",
+                    "SimpleProject_vs2017_Retail : SimpleProject_unity_2C62C614",
+                    "SimpleProject_vs2019_Debug : SimpleProject_unity_63ED6EB4",   // vs2019 values follow same pattern (debug == release),
+                    "SimpleProject_vs2019_Release : SimpleProject_unity_63ED6EB4", // but different hash values because of different conf.FastBuildUnityUseRelativePaths from vs2017.
+                    "SimpleProject_vs2019_Retail : SimpleProject_unity_D405C80E",
                 };
-            CollectionAssert.AreEqual(expectedLogNames, unityLogNames);
+            Assert.That(unityLogNames, Is.EqualTo(expectedLogNames));
         }
 
         protected void GenerateAndBuildUsingResolver<T>(DevEnv devEnv) where T : Bff.IUnityResolver, new()
@@ -98,7 +98,7 @@ namespace Sharpmake.UnitTests
         protected List<string> GetProjectUnityLogNames()
         {
             var project = GetProject<BffUnityResolverTestProjects.SimpleProject>();
-            Assert.IsNotNull(project);
+            Assert.That(project, Is.Not.Null);
 
             var logUnityNames = project.Configurations.OfType<CommonProjectConfiguration>().Select(x => x.Name + " : " + x.LogUnityName).ToList();
             logUnityNames.Sort();
@@ -132,8 +132,8 @@ namespace Sharpmake.UnitTests
                     var unityConfigurations = unitySection.Value;
                     foreach (var conf in unityConfigurations.OfType<CommonProjectConfiguration>())
                     {
-                        Assert.IsNull(conf.LogUnityName);
-                        Assert.IsNotNull(unity.UnityName);
+                        Assert.That(conf.LogUnityName, Is.Null);
+                        Assert.That(unity.UnityName, Is.Not.Null);
                         conf.LogUnityName = unity.UnityName;
                     }
                 }
@@ -160,7 +160,8 @@ namespace Sharpmake.UnitTests
                                       Optimization.Debug | Optimization.Release | Optimization.Retail,
                                       OutputType.Lib,
                                       Blob.FastBuildUnitys,
-                                      BuildSystem.FastBuild));
+                                      BuildSystem.FastBuild,
+                                      DotNetFramework.net8_0));
             }
 
             [Configure]

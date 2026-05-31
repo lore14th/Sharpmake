@@ -47,5 +47,12 @@
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\helloworldreference\HelloWorldReference.vs2022.net6_0.csproj">
+      <Project>{16f27fe3-40bf-573e-d03d-bfa4b73c534f}</Project>
+      <Name>HelloWorldReference</Name>
+      <Private>false</Private>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
 </Project>
