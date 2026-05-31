@@ -46,15 +46,15 @@ public class SharpmakeApplicationProject : SharpmakeBaseProject
         config.Output = Configuration.OutputType.DotNetConsoleApp; // override output type
 
         config.AddPublicDependency<SharpmakeCommonPlatformsProject>(target, DependencySetting.Default);
-        config.AddPublicDependency<SharpmakeCoreProject>(target, DependencySetting.Default);
+        config.AddPublicDependency<SharpmakeProject>(target, DependencySetting.Default);
         config.AddPublicDependency<SharpmakeGeneratorsProject>(target, DependencySetting.Default);
     }
 }
 
 [Sharpmake.Compile]
-public class SharpmakeCoreProject : SharpmakeBaseProject
+public class SharpmakeProject : SharpmakeBaseProject
 {
-    public SharpmakeCoreProject() : base("Sharpmake", @"15F793C7-9E88-64A9-591C-7244FCC6B771")
+    public SharpmakeProject() : base("Sharpmake", @"15F793C7-9E88-64A9-591C-7244FCC6B771")
     {
         SourceRootPath = @"[project.SharpmakeCsPath]/Sharpmake";
     }
@@ -93,7 +93,7 @@ public class SharpmakeGeneratorsProject : SharpmakeBaseProject
     {
         base.Configure(config, target);
 
-        config.AddPublicDependency<SharpmakeCoreProject>(target, DependencySetting.Default);
+        config.AddPublicDependency<SharpmakeProject>(target, DependencySetting.Default);
     }
 }
 
@@ -109,7 +109,7 @@ public class SharpmakeCommonPlatformsProject : SharpmakeBaseProject
     {
         base.Configure(config, target);
 
-        config.AddPublicDependency<SharpmakeCoreProject>(target, DependencySetting.Default);
+        config.AddPublicDependency<SharpmakeProject>(target, DependencySetting.Default);
         config.AddPublicDependency<SharpmakeGeneratorsProject>(target, DependencySetting.Default);
     }
 }
@@ -143,7 +143,7 @@ public class SharpmakeUnitTestsProject : SharpmakeBaseProject
         base.Configure(config, target);
 
         config.AddPublicDependency<SharpmakeCommonPlatformsProject>(target, DependencySetting.Default);
-        config.AddPublicDependency<SharpmakeCoreProject>(target, DependencySetting.Default);
+        config.AddPublicDependency<SharpmakeProject>(target, DependencySetting.Default);
         config.AddPublicDependency<SharpmakeGeneratorsProject>(target, DependencySetting.Default);
     }
 }
