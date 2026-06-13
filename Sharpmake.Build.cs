@@ -7,7 +7,7 @@ using System.IO;
 using Sharpmake;
 using TinfoilBuildTool;
 
-public class SharpmakeBaseProject : DotNetProject
+public class SharpmakeBaseProject : DefaultDotNetProject
 {
     public SharpmakeBaseProject(string projectName, string projectGuid) : base(projectName)
     {
