@@ -198,24 +198,6 @@ namespace Sharpmake
         Retail = 0x04
     }
 
-    // TinfoilBuildTool: Add support for hidden targets
-    // NOTE: Remember to set EnableHideTargets to true in the Solution constructor
-    [Fragment, Flags]
-    public enum Visibility
-    {
-        Show = 0x01,
-        Hide = 0x02
-    }
-    // ~TinfoilBuildTool
-
-    // TinfoilBuildTool: Add support for target type
-    public enum ProjectType
-    {
-        Native = 0x01,
-        DotNet = 0x02
-    }
-    // ~TinfoilBuildTool
-
     [Fragment, Flags]
     public enum OutputType
     {
@@ -496,13 +478,6 @@ namespace Sharpmake
         {
             return GetFragment<Optimization>();
         }
-
-        // TinfoilBuildTool: Add build target names
-        public virtual string GetBuildTargetName()
-        {
-            return string.Format("{0}-{1}", GetOptimization(), GetPlatform());
-        }
-        // ~TinfoilBuildTool
 
         public T GetFragment<T>()
         {
