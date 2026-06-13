@@ -75,6 +75,7 @@ namespace Sharpmake
         public string TargetName = string.Empty;
         public string ProjectConfigurationClass = string.Empty;
         public string DevEnvName = "vs2022";
+        public bool ValidationMode = false;
     }
     // ~TinfoilBuildTool
 
