@@ -156,6 +156,22 @@ namespace Sharpmake
             return solution;
         }
 
+        // TinfoilBuildTool: Add solution Pre/AfterConfigure
+        /// <summary>
+        /// Called before configuration
+        /// </summary>
+        public virtual void PreConfigure()
+        {
+        }
+
+        /// <summary>
+        /// Called after configuration
+        /// </summary>
+        public virtual void AfterConfigure()
+        {
+        }
+        // ~TinfoilBuildTool
+
         public IEnumerable<ResolvedProject> GetResolvedProjects(IEnumerable<Configuration> solutionConfigurations, out bool projectsWereFiltered)
         {
             if (!_dependenciesResolved)

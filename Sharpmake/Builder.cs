@@ -676,8 +676,17 @@ namespace Sharpmake
                 // Pre event
                 EventPreSolutionConfigure?.Invoke(solution);
 
+                // TinfoilBuildTool: Add solution Pre/AfterConfigure
+                solution.PreConfigure();
+                // ~TinfoilBuildTool
+
                 // Create and Configure all possible configurations.
                 solution.InvokeConfiguration(Context);
+
+                // TinfoilBuildTool: Add solution Pre/AfterConfigure
+                using (CreateProfilingScope("AfterConfigure" + solution.ClassName))
+                    solution.AfterConfigure();
+                // ~TinfoilBuildTool
 
                 // Post event
                 if (EventPostSolutionConfigure != null)
