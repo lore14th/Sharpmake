@@ -70,12 +70,26 @@ namespace Sharpmake
     }
 
     // TinfoilBuildTool: Add extra command line arguments
+    public enum TinfoilBuildToolMode
+    {
+        None = 0,
+        GenerateProjects,
+        BuildProjects,
+        RebuildProjects,
+        CleanProjects,
+        CompileFiles
+    }
+
     public class TinfoilBuildToolArguments
     {
-        public string TargetName = string.Empty;
+        public TinfoilBuildToolMode Mode = TinfoilBuildToolMode.GenerateProjects;
         public string ProjectConfigurationClass = string.Empty;
         public string DevEnvName = "vs2022";
         public bool ValidationMode = false;
+
+        public string TargetName = string.Empty;
+        public string TargetArchitecture = string.Empty;
+        public string[] CompileFiles;
     }
     // ~TinfoilBuildTool
 
