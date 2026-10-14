@@ -1738,6 +1738,18 @@ namespace Sharpmake
             }
         }
 
+        // TinfoilBuildTool: Set SharpmakeCsPath from ModuleRules
+        public void SetSharpmkakeCsPath(string sharpmakeCsPath)
+        {
+            if (Resolved)
+            {
+                throw new InternalError("Project {0} was already resolved", GetType().Name);
+            }
+
+            SharpmakeCsPath = sharpmakeCsPath;
+        }
+        // ~TinfoilBuildTool
+
         /// <summary>
         /// Called before configuration
         /// </summary>
